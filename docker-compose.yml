@@ -1,0 +1,30 @@
+version: '3.8'
+
+services:
+  backend:
+    build:
+      context: ./server
+      dockerfile: Dockerfile
+    container_name: bookstack_backend
+    ports:
+      - '3999:3999'
+    env_file:
+      - ./server/.env
+    volumes:
+      - ./server:/app
+    command: npm run start:dev
+
+  frontend:
+    build:
+      context: ./my-app
+      dockerfile: Dockerfile
+    container_name: bookstack_frontend
+    ports:
+      - '3000:3000'
+    depends_on:
+      - backend
+    environment:
+      NEXT_PUBLIC_API_URL: http://localhost:3999
+    volumes:
+      - ./my-app:/app
+    command: npm run dev
